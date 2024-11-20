@@ -1,24 +1,15 @@
-# Utiliser l'image de base PHP avec les extensions nécessaires
+# Utiliser une image PHP de base pour un environnement de production
 FROM php:8.3-cli
 
-# Mettre à jour le système et installer les extensions nécessaires pour PDO PostgreSQL et Composer
-RUN apt-get update && apt-get install -y \
-    unzip \
-    curl \
-    libpq-dev \
-    && docker-php-ext-install pdo_pgsql
-
-# Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Créer un répertoire pour Laravel
 WORKDIR /app
 
-# Installer Laravel en utilisant Composer
-RUN composer create-project --prefer-dist laravel/laravel .
+RUN apt update
+RUN apt install libpq-dev -y
+RUN apt install git -y
 
-# Exposer le port 8080 à l'extérieur
-EXPOSE 8080
+RUN docker-php-ext-install pdo pdo_pgsql pdo_pgsql
 
-# Commande pour lancer Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+COPY ./app-local .
+
+EXPOSE 8000
+ENTRYPOINT [ "php", "artisan", "serve", "--host", "0.0.0.0" ]
