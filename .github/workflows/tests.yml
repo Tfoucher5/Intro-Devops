@@ -8,7 +8,7 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     strategy:
       fail-fast: true
@@ -41,7 +41,7 @@ jobs:
         run: vendor/bin/phpunit
 
   build-docker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: tests
     steps:
       - name: Checkout Docker
