@@ -40,6 +40,14 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit
 
+      - name: Scan SonarQube
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=Laravel \
+            -Dsonar.srouces=. \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
   build-docker:
     runs-on: self-hosted
     needs: tests
