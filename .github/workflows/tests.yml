@@ -82,3 +82,19 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_TAG }}
+
+  deploy:
+    needs: build-docker
+    name: Déploiement SSH sur Laravel Prod
+    runs-on: self-hosted
+
+    steps:
+      - name: Connexion & Déploiement
+        run: >
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}
+          "
+            docker stop app-devops || true
+            docker rm app-devops || true
+            docker run -d -p 9501:8000 --network devops --name app-devops --pull=always ${{ secrets.DOCKERHUB_TAG }}
+            exit
+          "
